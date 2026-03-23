@@ -1,4 +1,4 @@
-
+```python
 # =============================================
 # AI-DRIVEN SMART BUDGETING APP — FINAL VERSION
 # Supports: URL Params + Auto Prediction + Mode Control
@@ -7,7 +7,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
 import plotly.graph_objects as go
 
 from sklearn.model_selection import train_test_split
@@ -135,27 +134,30 @@ mode = params.get("mode", "full")       # full / prediction
 auto_run = params.get("auto", "false") == "true"
 
 # =============================================
-# INPUT HANDLING (URL + DEFAULTS)
+# INPUT HANDLING (SAFE DEFAULTS)
 # =============================================
 def get_user_input():
     user_input = {}
     feature_cols = df.drop(["Total_Potential_Savings","User_Type"], axis=1).columns
 
+    def safe_get_param(col, default):
+        value = params.get(col)
+        if value is None or value == "":
+            return default
+        try:
+            return float(value)
+        except:
+            return default
+
     for col in feature_cols:
         default_val = float(df[col].mean())
-
-        if col in params:
-            try:
-                default_val = float(params[col])
-            except:
-                pass
-
+        default_val = safe_get_param(col, default_val)
         user_input[col] = st.number_input(col, value=default_val)
 
     return user_input
 
 # =============================================
-# PREDICTION UI (REUSABLE)
+# PREDICTION UI
 # =============================================
 def run_prediction(user_input):
     user_df = pd.DataFrame([user_input])
@@ -195,49 +197,24 @@ if mode == "prediction":
 
     user_input = get_user_input()
 
-    if st.button("Predict Savings") or auto_run:
+    if st.button("Predict Savings") or (auto_run and len(params) > 0):
         run_prediction(user_input)
 
 # =============================================
-# FULL APP MODE (NORMAL)
+# FULL APP MODE
 # =============================================
 else:
     st.title("💰 AI-Driven Smart Budgeting App")
 
-    tab1, tab2, tab3 = st.tabs([
-        "📊 Data Explorer",
-        "🤖 Model Comparison",
-        "🔮 Smart Prediction"
-    ])
+    tab1 = st.tabs(["🔮 Smart Prediction"])
 
-    # TAB 1
     with tab1:
-        st.subheader("Dataset Overview")
-        st.dataframe(df.head())
-
-        col = st.selectbox("Select feature", df.select_dtypes(include=np.number).columns)
-        fig = px.histogram(df, x=col, nbins=40)
-        st.plotly_chart(fig, use_container_width=True)
-
-    # TAB 2
-    with tab2:
-        st.subheader("ML Model Performance")
-        st.dataframe(results_df)
-
-        fig = px.bar(results_df, x="Model", y="R2", color="Model")
-        st.plotly_chart(fig, use_container_width=True)
-
-    # TAB 3
-    with tab3:
         st.subheader("Predict & Optimize Savings")
-
-        user_input = get_user_input()
-
-        if st.button("Predict Savings"):
-            run_prediction(user_input)
+        run_prediction(get_user_input())
 
 # =============================================
 # FOOTER
 # =============================================
 st.markdown("---")
 st.markdown("🚀 AI Smart Budgeting System | Flutter + Streamlit + ML")
+```
