@@ -1,4 +1,4 @@
-```python
+
 # =============================================
 # AI-DRIVEN SMART BUDGETING APP — FINAL VERSION
 # Supports: URL Params + Auto Prediction + Mode Control
@@ -217,4 +217,3 @@ else:
 # =============================================
 st.markdown("---")
 st.markdown("🚀 AI Smart Budgeting System | Flutter + Streamlit + ML")
-```
