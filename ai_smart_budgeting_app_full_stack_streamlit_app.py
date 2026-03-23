@@ -206,11 +206,8 @@ if mode == "prediction":
 else:
     st.title("💰 AI-Driven Smart Budgeting App")
 
-    tab1 = st.tabs(["🔮 Smart Prediction"])
-
-    with tab1:
-        st.subheader("Predict & Optimize Savings")
-        run_prediction(get_user_input())
+    st.subheader("Predict & Optimize Savings")
+    run_prediction(get_user_input())
 
 # =============================================
 # FOOTER
