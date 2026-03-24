@@ -1,7 +1,5 @@
-
 # =============================================
 # AI-DRIVEN SMART BUDGETING APP — DUAL MODE VERSION
-# Flutter (lightweight) + Web (full dashboard)
 # =============================================
 
 import streamlit as st
@@ -130,10 +128,10 @@ df["User_Type"] = kmeans.fit_predict(cluster_features)
 # URL PARAMS
 # =============================================
 params = st.query_params
-mode = params.get("mode", "full")   # prediction / full
+mode = params.get("mode", "full")
 
 # =============================================
-# INPUT (NO UI — URL ONLY)
+# INPUT
 # =============================================
 def get_user_input():
     user_input = {}
@@ -153,12 +151,11 @@ def get_user_input():
     return user_input
 
 # =============================================
-# PREDICTION
+# PREDICTION (✅ FIXED HERE)
 # =============================================
 def run_prediction(user_input):
     user_df = pd.DataFrame([user_input])
 
-    # Ensure all columns exist
     for col in df.drop(["Total_Potential_Savings","User_Type"], axis=1).columns:
         if col not in user_df.columns:
             user_df[col] = df[col].mean()
@@ -170,70 +167,69 @@ def run_prediction(user_input):
 
     st.success(f"💸 Estimated Monthly Savings: ₹ {prediction:,.2f}")
 
+    # =========================
+    # ✅ NEW FINANCIAL SCORE LOGIC
+    # =========================
     income = user_input.get("Income", 0)
 
-expense_cols = [
-    "Groceries","Transport","Eating_Out",
-    "Entertainment","Utilities","Healthcare","Miscellaneous"
-]
+    expense_cols = [
+        "Groceries","Transport","Eating_Out",
+        "Entertainment","Utilities","Healthcare","Miscellaneous"
+    ]
 
-total_expenses = sum(
-    float(user_input.get(c, 0) or 0)
-    for c in expense_cols
-)
+    total_expenses = sum(
+        float(user_input.get(c, 0) or 0)
+        for c in expense_cols
+    )
 
-# Avoid division issues
-if income <= 0:
-    score = 0
-else:
-    savings = income - total_expenses
-    savings_ratio = savings / income
-
-    if savings < 0:
-        # Heavy penalty for overspending
-        score = max(0, 50 + (savings_ratio * 100))
+    if income <= 0:
+        score = 0
     else:
-        # Reward saving behavior
-        score = min(100, savings_ratio * 100 + 50)
+        savings = income - total_expenses
+        savings_ratio = savings / income
 
-st.metric("💎 Financial Health Score", f"{score:.1f}/100")
+        if savings < 0:
+            score = max(0, 50 + (savings_ratio * 100))
+        else:
+            score = min(100, savings_ratio * 100 + 50)
 
-    # 🔥 Only show heavy UI in FULL mode
-if mode != "prediction":
-    cats = ["Groceries","Transport","Eating_Out","Entertainment","Utilities","Healthcare","Miscellaneous"]
-    vals = [user_input.get(c,0) for c in cats]
+    st.metric("💎 Financial Health Score", f"{score:.1f}/100")
 
-    radar = go.Figure(go.Scatterpolar(r=vals, theta=cats, fill='toself'))
-    radar.update_layout(title="Expense Distribution")
-    st.plotly_chart(radar, use_container_width=True)
+    # =========================
+    # UI (unchanged)
+    # =========================
+    if mode != "prediction":
+        cats = ["Groceries","Transport","Eating_Out","Entertainment","Utilities","Healthcare","Miscellaneous"]
+        vals = [user_input.get(c,0) for c in cats]
 
-    st.subheader("🧠 AI Budget Recommendations")
-    recs = generate_recommendations(user_df)
-    for r in recs:
-        st.markdown(r)
+        radar = go.Figure(go.Scatterpolar(r=vals, theta=cats, fill='toself'))
+        radar.update_layout(title="Expense Distribution")
+        st.plotly_chart(radar, use_container_width=True)
 
-    gauge = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=prediction,
-        title={'text': "Savings Potential"},
-        gauge={'axis': {'range': [0, df['Total_Potential_Savings'].max()]}}
-    ))
-    st.plotly_chart(gauge, use_container_width=True)
+        st.subheader("🧠 AI Budget Recommendations")
+        recs = generate_recommendations(user_df)
+        for r in recs:
+            st.markdown(r)
+
+        gauge = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=prediction,
+            title={'text': "Savings Potential"},
+            gauge={'axis': {'range': [0, df['Total_Potential_Savings'].max()]}}
+        ))
+        st.plotly_chart(gauge, use_container_width=True)
 
 # =============================================
 # APP ENTRY
 # =============================================
 if mode == "prediction":
-    # 🔥 Flutter mode → minimal UI
     if len(params) == 0:
         st.stop()
 
     run_prediction(get_user_input())
 
 else:
-    # 🌐 Web mode → full dashboard
     st.title("💰 AI-Driven Smart Budgeting App")
-
     user_input = get_user_input()
     run_prediction(user_input)
 
