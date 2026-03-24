@@ -58,7 +58,7 @@ The AI-Smart Budgeting App provides a full-stack solution for personal financial
 
 **Installation:**
 
-\`\`\`bash
+\\\`bash
 # Clone the repository
 git clone https://github.com/HereticCoder/AI-Smart-Budgeting-App.git
 cd AI-Smart-Budgeting-App
@@ -68,7 +68,7 @@ pip install -r requirements.txt
 
 # Run the Streamlit app
 streamlit run ai_smart_budgeting_app_full_stack_streamlit_app.py
-\`\`\`
+\\\`
 
 **Required Dependencies:**
 - streamlit — Web framework for the UI
