@@ -91,7 +91,7 @@ def train_models(df):
     return results_df, best_model, scaler
 
 # =============================================
-# RECOMMENDATIONS
+# RECOMMENDATIONS (✅ FIXED)
 # =============================================
 def generate_recommendations(user_df):
     recs = []
@@ -99,12 +99,30 @@ def generate_recommendations(user_df):
         "Groceries","Transport","Eating_Out",
         "Entertainment","Utilities","Healthcare","Miscellaneous"
     ]
+
     avg = user_df[expense_cols].mean().mean()
 
     for col in expense_cols:
-        if col in user_df.columns and user_df[col].values[0] > avg * 1.2:
-            save = user_df[col].values[0] * 0.15
-            recs.append(f"🔻 Reduce **{col}** by 15% → Save ₹{save:,.0f}")
+        if col in user_df.columns:
+            value = user_df[col].values[0]
+
+            if value > avg:
+                ratio = value / avg
+
+                if ratio < 1.2:
+                    percent = 10
+                elif ratio < 1.5:
+                    percent = 15
+                elif ratio < 2:
+                    percent = 20
+                else:
+                    percent = 25
+
+                save = value * (percent / 100)
+
+                recs.append(
+                    f"🔻 Reduce **{col}** by {percent}% → Save ₹{save:,.0f}"
+                )
 
     if not recs:
         recs.append("✅ Your spending pattern is already balanced")
@@ -151,7 +169,7 @@ def get_user_input():
     return user_input
 
 # =============================================
-# PREDICTION (✅ FIXED HERE)
+# PREDICTION (✅ FIXED SCORE)
 # =============================================
 def run_prediction(user_input):
     user_df = pd.DataFrame([user_input])
@@ -196,7 +214,7 @@ def run_prediction(user_input):
     st.metric("💎 Financial Health Score", f"{score:.1f}/100")
 
     # =========================
-    # UI (unchanged)
+    # UI
     # =========================
     if mode != "prediction":
         cats = ["Groceries","Transport","Eating_Out","Entertainment","Utilities","Healthcare","Miscellaneous"]
