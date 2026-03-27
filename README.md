@@ -58,7 +58,7 @@ The AI-Smart Budgeting App provides a full-stack solution for personal financial
 
 **Installation:**
 
-\\\`bash
+```bash
 # Clone the repository
 git clone https://github.com/HereticCoder/AI-Smart-Budgeting-App.git
 cd AI-Smart-Budgeting-App
@@ -68,7 +68,8 @@ pip install -r requirements.txt
 
 # Run the Streamlit app
 streamlit run ai_smart_budgeting_app_full_stack_streamlit_app.py
-\\\`
+
+```
 
 **Required Dependencies:**
 - streamlit — Web framework for the UI
@@ -105,7 +106,8 @@ flutter run
 
 ## 📂 Project Structure
 
-\\\`
+
+```
 AI-Smart-Budgeting-App/
 ├── README.md                              # This file
 ├── requirements.txt                       # Python dependencies
@@ -119,7 +121,8 @@ AI-Smart-Budgeting-App/
 │   ├── ios/                              # iOS build configuration
 │   └── web/                              # Web build output
 └── .idea/                                # IDE configuration
-\\\`
+
+```
 
 ---
 
@@ -151,9 +154,9 @@ AI-Smart-Budgeting-App/
 
 The Flutter app (budget_optimizer) opens a WebView to the Streamlit app and passes user inputs as URL query parameters:
 
-\\\`
+```
 https://your-streamlit-app.com/?Income=50000&Age=28&Rent=15000&...
-\\\`
+```
 
 The Streamlit app automatically processes these parameters and runs predictions without requiring manual input.
 
