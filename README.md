@@ -85,7 +85,7 @@ streamlit run ai_smart_budgeting_app_full_stack_streamlit_app.py
 
 **Installation:**
 
-\\\`bash
+```bash
 # Navigate to frontend directory
 cd frontend
 
@@ -94,7 +94,8 @@ flutter pub get
 
 # Run on emulator or connected device
 flutter run
-\\\`
+
+```
 
 **Flutter Dependencies:**
 - webview_flutter — Embedded web view for Streamlit integration
