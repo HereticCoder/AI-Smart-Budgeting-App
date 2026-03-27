@@ -176,7 +176,9 @@ The Streamlit app automatically processes these parameters and runs predictions 
 
 ## Demo
 
-**Demo Video**: [link](https://youtube.com/shorts/b5c_conflFc)
+## 🎥 Demo Video
+
+👉 [Click here to watch the demo](https://youtube.com/shorts/b5c_conflFc?feature=share)
 
 ---
 
